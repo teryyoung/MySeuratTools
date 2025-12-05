@@ -2,7 +2,4 @@
 
 export("%>%")
 export(smart_qc_cutoff)
-import(Seurat)
-import(ggplot2)
 importFrom(magrittr,"%>%")
-importFrom(stats,density)

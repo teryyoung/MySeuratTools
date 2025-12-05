@@ -6,35 +6,34 @@
 \usage{
 smart_qc_cutoff(
   values,
+  filter_side = c("low", "high"),
+  knee_selection = c("closer", "further"),
   adjust = 2,
-  valley_strictness = 0.99,
-  min_peak_ratio = 1e-04,
   assumption = "gaussian",
+  min_peak_ratio = 1e-04,
+  valley_strictness = 0.99,
   show_plot = TRUE,
   title = ""
 )
 }
 \arguments{
-\item{values}{数值向量。例如 Seurat 对象的 nFeature_RNA。}
+\item{values}{数值向量 (nFeature 或 nCount)。}
 
-\item{adjust}{平滑度。对于导数计算，平滑非常重要，建议 2.0 或更高。}
+\item{filter_side}{字符串。"low" (默认，切除左尾) 或 "high" (切除右尾)。}
 
-\item{valley_strictness}{数值。谷底判定阈值，默认 0.99 (只要谷底比副峰低1\%就算双峰)。}
+\item{knee_selection}{字符串。"closer" (默认，选离主峰最近的拐点) 或 "further" (选离主峰最远的拐点)。}
 
-\item{min_peak_ratio}{数值。副峰高度至少要是主峰高度的多少倍才被考虑？
-默认 1e-4 (0.01\%)，用于处理极其悬殊的双峰分布。}
+\item{adjust}{平滑度 (默认 2.0)。}
 
-\item{show_plot}{逻辑值。是否绘图。}
+\item{assumption}{"gaussian" 或 "poisson" (用于 counts 的 sqrt 变换)。}
 
-\item{title}{字符串。图片标题。}
+\item{min_peak_ratio}{双峰检测时，副峰的最小高度比例 (默认 1e-4)。}
 
-\item{slope_threshold}{数值。单峰模式下的斜率阈值。}
-}
-\value{
-一个数值 (cutoff)。  并可在Rplot中展示图像(show_plot=TRUE)
+\item{valley_strictness}{双峰检测时，谷底深度的严格程度 (默认 0.99，即谷底低于某一峰值的0.99倍则判定为谷底)。}
 }
 \description{
-这个函数用于根据 nFeature 或 nCount 的分布（双峰或单峰长尾），
+这个函数用于根据 nFeature 或 nCount 或其他数值的分布（双峰或单峰长尾），
 自动选择合适的算法（谷底法或拐点法）来计算过滤阈值。
-单峰模式下，采用“二阶导数最右侧局部峰值法”，寻找最紧贴主峰的拐角。
+双峰模式下，使用谷底作为阈值。
+单峰模式下，采用“二阶导数局部峰值法”，寻找分布函数的拐角。
 }
